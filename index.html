@@ -2,8 +2,6 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8" />
-
-    <!-- 🔥 QUAN TRỌNG cho mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <style>
@@ -12,23 +10,85 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #000; /* tránh viền trắng */
+            background: #000;
         }
 
+        /* dùng biến --vh để fix iPhone */
         .full-pdf {
-            position: fixed; /* 🔥 quan trọng hơn absolute */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
             border: none;
+        }
+
+        /* fallback nếu iframe lỗi */
+        .fallback {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .fallback a {
+            color: #fff;
+            font-size: 18px;
+            text-decoration: none;
+            border: 1px solid #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
+
     <iframe 
+        id="pdfFrame"
         src="/ho_so_nang_luc.pdf#toolbar=0&navpanes=0&scrollbar=0&zoom=page-width"
         class="full-pdf">
     </iframe>
+
+    <!-- fallback nếu iPhone không load iframe PDF -->
+    <div class="fallback" id="fallback">
+        <a href="/ho_so_nang_luc.pdf" target="_blank">
+            Mở PDF
+        </a>
+    </div>
+
+    <script>
+        // ✅ Fix chiều cao iPhone
+        function setVH() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', vh + 'px');
+        }
+        setVH();
+        window.addEventListener('resize', setVH);
+
+        // ✅ Detect iPhone + fallback iframe PDF
+        function isIOS() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        if (isIOS()) {
+            // Sau 1s nếu iframe không hiển thị thì fallback
+            setTimeout(() => {
+                const iframe = document.getElementById('pdfFrame');
+                try {
+                    // iOS thường không load contentWindow cho PDF
+                    if (!iframe.contentDocument) {
+                        document.getElementById('fallback').style.display = 'flex';
+                        iframe.style.display = 'none';
+                    }
+                } catch (e) {
+                    document.getElementById('fallback').style.display = 'flex';
+                    iframe.style.display = 'none';
+                }
+            }, 1000);
+        }
+    </script>
+
 </body>
 </html>
