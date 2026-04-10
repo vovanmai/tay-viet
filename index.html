@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+
+    <!-- 🔥 QUAN TRỌNG cho mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: #000; /* tránh viền trắng */
+        }
+
+        .full-pdf {
+            position: fixed; /* 🔥 quan trọng hơn absolute */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <iframe 
+        src="/document.pdf#toolbar=0&navpanes=0&scrollbar=0&zoom=page-width"
+        class="full-pdf">
+    </iframe>
+</body>
+</html>
